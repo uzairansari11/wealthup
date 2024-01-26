@@ -8,6 +8,10 @@ function App() {
   const [code, setCode] = useState("");
   const [inputText, setInputText] = useState("");
   const [inputMessage, setInputMessage] = useState("");
+  const [clicked, setClicked] = useState({
+    refreshed: false,
+    submitted: false,
+  });
   const [error, setError] = useState(false);
   const timerID = useRef(null);
   const handleInputTextDefault = () => {
@@ -15,18 +19,22 @@ function App() {
   };
 
   const handleGenerateCode = async () => {
+    setClicked({ ...clicked, refreshed: true });
     try {
       const res = await axios.get(`${process.env.REACT_APP_URI}/code`);
       setCode(res.data.code);
     } catch (error) {
       alert("Error", error);
+    } finally {
+      setClicked({ ...clicked, refreshed: false });
     }
   };
-
+  console.log(clicked);
   const handleSubmitCode = async () => {
     if (inputText.trim() === "") {
       return alert("Please Enter Code!");
     }
+    setClicked({ ...clicked, submitted: true });
     clearTimeout(timerID.current);
     try {
       const res = await axios.post(`${process.env.REACT_APP_URI}/code`, {
@@ -41,6 +49,7 @@ function App() {
     } finally {
       timerID.current = setTimeout(handleInputTextDefault, 2000);
       setInputText("");
+      setClicked({ ...clicked, submitted: false });
     }
   };
   useEffect(() => {
@@ -59,9 +68,10 @@ function App() {
         />
 
         <ButtonComponent
-          title={"Refresh"}
+          title={clicked.refreshed ? "Generating" : "Refresh"}
           className={"button-primary-style"}
           onClick={handleGenerateCode}
+          disabled={clicked.refreshed}
         />
       </div>
 
@@ -75,9 +85,10 @@ function App() {
           onChange={(e) => setInputText(e.target.value.trim())}
         />
         <ButtonComponent
-          title={"Submit"}
+          title={clicked.submitted ? "Submitted" : "Submit"}
           className={"button-primary-style"}
           onClick={handleSubmitCode}
+          disabled={clicked.submitted}
         />
       </div>
       <div className="code-value-container" style={{ marginTop: "5px" }}>
