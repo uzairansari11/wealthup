@@ -1,11 +1,13 @@
 # Wealthup
 
-### This project is about code generation and validation.
+## This project is about code generation and validation.
+### User can generate random code and can validation weather code is valid on not on certain condtions if code is not used before and code is not older than 1 minute.
+
 
 ### TechStack
 
 #### Frontend : React
-#### Backend : Node Js, Express Js & MongoDB
+#### Backend : Node Js, Express Js & MongoDB 
 
 ### Screenshot
 
